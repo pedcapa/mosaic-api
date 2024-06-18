@@ -4,6 +4,7 @@ from app.utils.gpt import fetch_gpt_response
 
 router = APIRouter()
 
+
 @router.post("/gpt_response", response_model=GPTResponse)
 async def gpt_response(request: GPTRequest):
     try:

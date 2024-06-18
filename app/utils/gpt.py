@@ -2,6 +2,7 @@ import httpx
 from app.models.schemas import GPTRequest, GPTResponse
 from app.core.config import settings
 
+
 async def fetch_gpt_response(request: GPTRequest) -> GPTResponse:
     headers = {
         "Authorization": f"Bearer {settings.openai_api_key}",

@@ -4,6 +4,7 @@ from app.utils.image import fetch_image_response
 
 router = APIRouter()
 
+
 @router.post("/generate_image", response_model=ImageResponse)
 async def generate_image(request: ImageRequest):
     try:

@@ -2,6 +2,7 @@ import httpx
 from app.models.schemas import ImageRequest, ImageResponse
 from app.core.config import settings
 
+
 async def fetch_image_response(request: ImageRequest) -> ImageResponse:
     headers = {
         "Authorization": f"Bearer {settings.openai_api_key}",
