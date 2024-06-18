@@ -8,8 +8,14 @@ async def fetch_image_response(request: ImageRequest) -> ImageResponse:
         "Authorization": f"Bearer {settings.openai_api_key}",
         "Content-Type": "application/json"
     }
+    user_profile = request.user_profile
+    image_prompt = (
+        f"Generate an image for a user with {user_profile.learning_style} learning style and {user_profile.disability}. "
+        f"Include elements related to {', '.join(user_profile.interests)}. "
+        f"Prompt: {request.prompt}"
+    )
     data = {
-        "prompt": request.prompt,
+        "prompt": image_prompt,
         "response_format": "json_object"
     }
     async with httpx.AsyncClient() as client:

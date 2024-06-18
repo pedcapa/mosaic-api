@@ -8,10 +8,11 @@ async def fetch_gpt_response(request: GPTRequest) -> GPTResponse:
         "Authorization": f"Bearer {settings.openai_api_key}",
         "Content-Type": "application/json"
     }
+    user_profile = request.user_profile
     system_prompt = (
-        f"You are an assistant helping a {request.user_profile.learning_style} learner with {request.user_profile.disability}. "
-        f"User is interested in {', '.join(request.user_profile.interests)}. "
-        "Please provide the response in a structured JSON format as requested."
+        f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
+        f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
+        "Please provide the response in a structured JSON format with content sections that can include paragraphs, images descriptions, or additional structured data."
     )
     data = {
         "model": settings.openai_gpt_model,
