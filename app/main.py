@@ -90,10 +90,11 @@ async def generate_image(request: ImageRequest):
 
     try:
         response = openai.images.generate(
-            model="dall-e-3",
+            model="dall-e-2",
+            size="512x512",
             prompt=image_prompt,
-            n=1,
-            quality="standard"
+            n=1
+            #quality="standard"
         )
         return {"url": response.data[0].url}
     except Exception as e:
