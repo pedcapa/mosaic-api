@@ -363,7 +363,7 @@ A continuación se describen los endpoints disponibles en la API.
 
 - Asegúrate de configurar correctamente las variables de entorno para la API de OpenAI.
 - Para producción, considera usar HTTPS y configurar el servidor detrás de un proxy reverso como Nginx.
-- El uso de `screen` o `nohup` es opcional pero recomendado para mantener la aplicación en ejecución en segundo plano.
+- El uso de `screen` o `nohup` es opcional pero recomendado para mantener la API en ejecución en segundo plano.
 
 
 ## Licencia
