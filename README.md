@@ -330,9 +330,11 @@ A continuación se describen los endpoints disponibles en la API.
   "content": [
     {
       "type": "paragraph",
-      "text": "
-
-El archivo PDF contiene información sobre..."
+      "text": "El archivo PDF contiene información sobre..."
+    },
+    {
+      "type": "image",
+      "description": "Una ilustración acerca de..."
     }
   ]
 }
