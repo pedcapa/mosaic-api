@@ -50,7 +50,7 @@ async def get_gpt_response(request: GPTRequest):
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
         'Use the prefered learning style, the disability of the user and the interests to help build your response, all that info of the user could be used, but the main focus is the topic'
         'Do not forget that the main goal is that you should explain the subject/topic very well for the user'
-        'Please provide the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
+        'Please provide the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","description": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "description" field of the image should provide a detailed prompt for generate the image.'
         '3. The text should be in a very "down-to-earth" language, so a kid or a intelectual disabled person could understand even the most complex subject. Do not be afraid to use analogies or metaphors. The image description should include that the goal is that it is in a kid books style drawing'
@@ -147,7 +147,7 @@ async def generate_via_pdf(request: GPTRequest):
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
         'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user must be used'
-        'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
+        'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","description": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "description" field of the image should provide a detailed prompt for generate the image.'
         '3. The text should be in a very "down-to-earth" language, so a kid or a intelectual disabled person could understand even the most complex subject. Do not be afraid to use analogies or metaphors. The image description should include that the goal is that it is in a kid books style drawing'
