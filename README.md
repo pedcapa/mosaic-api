@@ -363,9 +363,6 @@ El archivo PDF contiene información sobre..."
 - Para producción, considera usar HTTPS y configurar el servidor detrás de un proxy reverso como Nginx.
 - El uso de `screen` o `nohup` es opcional pero recomendado para mantener la aplicación en ejecución en segundo plano.
 
-## Contribución
-
-Si deseas contribuir a este proyecto, por favor sigue las pautas estándar de fork, desarrollo y pull request.
 
 ## Licencia
 
