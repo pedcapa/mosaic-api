@@ -32,6 +32,7 @@ class ImageRequest(BaseModel):
 class QuizzRequest(BaseModel):
     content: list
 
+
 class FileName(BaseModel):
     file: str
 
@@ -87,6 +88,7 @@ async def generate_image(request: ImageRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # quizz
 @app.post("/api/v1/generate_quizz")
 async def generate_quizz(request: QuizzRequest):
@@ -115,15 +117,17 @@ async def generate_quizz(request: QuizzRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/speech_to_text")
+
+@app.post("/api/v1/speech_to_text")
 async def speech_to_text(file_name: FileName):
     audio_file = open(file_name.file, "rb")
     transcript = openai.audio.transcriptions.create(
-    model="whisper-1",
-    file=audio_file 
+        model="whisper-1",
+        file=audio_file
     )
 
     return transcript
+
 
 if __name__ == "__main__":
     import uvicorn
