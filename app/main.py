@@ -1,18 +1,22 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from pydantic import BaseModel
-from pathlib import Path
+from fastapi.responses import JSONResponse
+import PyPDF2
 import openai
 import os
 import json
-import requests
+from pathlib import Path
 
-# Configura la clave API de OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
+UPLOAD_DIRECTORY = "./app/uploads/"
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
 
-# Modelos de datos para las solicitudes
+gpt_model = "gpt-4o"
+
 class UserProfile(BaseModel):
     interests: list[str]
     learning_style: list[str]
@@ -51,7 +55,7 @@ async def get_gpt_response(request: GPTRequest):
 
     try:
         response = openai.chat.completions.create(
-            model="gpt-4o",
+            model=gpt_model,
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -102,7 +106,7 @@ async def generate_quizz(request: QuizzRequest):
 
     try:
         response = openai.chat.completions.create(
-            model="gpt-4o",
+            model=gpt_model,
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -127,6 +131,58 @@ async def speech_to_text(file_name: FileName):
     )
 
     return transcript
+
+
+@app.post("/api/v1/generate_via_pdf")
+async def generate_via_pdf(request: GPTRequest):
+    user_profile = request.user_profile
+    system_prompt = (
+        f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
+        f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
+        'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
+        '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
+        '2. The "text" field of the image should provide a detailed prompt for generate the image.'
+    )
+
+    pdf_reader = PyPDF2.PdfReader(request.prompt)
+    text = ""
+
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text()
+
+    try:
+        response = openai.chat.completions.create(
+            model=gpt_model,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text}
+            ]
+        )
+
+        json_string = response.choices[0].message.content
+        json_object = json.loads(json_string)
+
+        return json_object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/upload-file/")
+async def upload_file(file: UploadFile = File(...)):
+    # Crear el directorio si no existe
+    Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
+
+    # Construir la ruta completa donde se guardará el archivo
+    file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
+
+    # Escribir el archivo en el sistema de archivos
+    with open(file_location, "wb+") as file_object:
+        file_object.write(await file.read())
+
+    # Devolver la ruta del archivo
+    return JSONResponse(content={"filename": file.filename, "location": file_location})
 
 
 if __name__ == "__main__":
