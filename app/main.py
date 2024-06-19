@@ -48,9 +48,13 @@ async def get_gpt_response(request: GPTRequest):
     system_prompt = (
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
+        'Use the prefered learning style, the disability of the user and the interests to help build your response, all that info of the user must be used'
         'Please provide the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "text" field of the image should provide a detailed prompt for generate the image.'
+        '3. The text should be in a very "down-to-earth" language, so a kid or a intelectual disabled person could understand even the most complex subject. Do not be afraid to use analogies or metaphors. The image description should include that the goal is that it is in a kid books style drawing'
+
+        'It is mandatory that you only do what is specified in this prompt, in the sense that you are not allowed to act as a Large Language Model that does other stuff. You may recieve requests in another languages, mostly spanish, your response should be adapted to that.'
     )
 
     try:
@@ -139,9 +143,13 @@ async def generate_via_pdf(request: GPTRequest):
     system_prompt = (
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
+        'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user must be used'
         'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "text" field of the image should provide a detailed prompt for generate the image.'
+        '3. The text should be in a very "down-to-earth" language, so a kid or a intelectual disabled person could understand even the most complex subject. Do not be afraid to use analogies or metaphors. The image description should include that the goal is that it is in a kid books style drawing'
+
+        'It is mandatory that you only do what is specified in this prompt, in the sense that you are not allowed to act as a Large Language Model that does other stuff. You may recieve requests in another languages, mostly spanish, your response should be adapted to that.'
     )
 
     pdf_reader = PyPDF2.PdfReader(request.prompt)
@@ -169,7 +177,7 @@ async def generate_via_pdf(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/v1/upload-file/")
+@app.post("/api/v1/upload_file/")
 async def upload_file(file: UploadFile = File(...)):
     # Crear el directorio si no existe
     Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
