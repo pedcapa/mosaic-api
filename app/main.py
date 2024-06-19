@@ -17,6 +17,7 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 gpt_model = "gpt-4o"
 
+
 class UserProfile(BaseModel):
     interests: list[str]
     learning_style: list[str]
@@ -41,7 +42,7 @@ class FileName(BaseModel):
     file: str
 
 
-# respuesta personalizada
+# Obtener respuesta personalizada
 @app.post("/api/v1/gpt_response")
 async def get_gpt_response(request: GPTRequest):
     user_profile = request.user_profile
@@ -76,7 +77,7 @@ async def get_gpt_response(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# generar imagen
+# Generar imagen via Dall-e-2
 @app.post("/api/v1/generate_image")
 async def generate_image(request: ImageRequest):
     user_profile = request.user_profile
@@ -85,7 +86,7 @@ async def generate_image(request: ImageRequest):
         f"Include elements related to {', '.join(user_profile.interests)}. "
         "You should never include text or words in the image. Could be helpful that you take in consideration the learning style, the disability and the interests of the user to create a useful image for them, but remember the main goal is the topic"
         f"Prompt: {request.prompt}"
-        
+
     )
 
     try:
@@ -94,14 +95,13 @@ async def generate_image(request: ImageRequest):
             size="512x512",
             prompt=image_prompt,
             n=1
-            #quality="standard"
         )
         return {"url": response.data[0].url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# quizz
+# Generar el quizz con 5 preguntas de opción múltiple
 @app.post("/api/v1/generate_quizz")
 async def generate_quizz(request: QuizzRequest):
     content = json.dumps(request.content)
@@ -130,6 +130,7 @@ async def generate_quizz(request: QuizzRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Convertir el audio a texto
 @app.post("/api/v1/speech_to_text")
 async def speech_to_text(file_name: FileName):
     audio_file = open(file_name.file, "rb")
@@ -141,6 +142,7 @@ async def speech_to_text(file_name: FileName):
     return transcript
 
 
+# Generar la respuesta personalizada basada en un PDF
 @app.post("/api/v1/generate_via_pdf")
 async def generate_via_pdf(request: GPTRequest):
     user_profile = request.user_profile
@@ -182,6 +184,7 @@ async def generate_via_pdf(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Subir el archivo PDF ó de Audio al servidor
 @app.post("/api/v1/upload_file/")
 async def upload_file(file: UploadFile = File(...)):
     Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
