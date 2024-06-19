@@ -4,7 +4,7 @@ from pathlib import Path
 import openai
 import os
 import json
-
+import requests
 
 # Configura la clave API de OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -28,6 +28,7 @@ class ImageRequest(BaseModel):
     prompt: str
     user_profile: UserProfile
 
+
 class AudioRequest(BaseModel):
     prompt: str
 
@@ -47,7 +48,7 @@ async def get_gpt_response(request: GPTRequest):
     try:
         response = openai.chat.completions.create(
             model="gpt-4o",
-            response_format={ "type": "json_object" },
+            response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": request.prompt}
@@ -83,20 +84,28 @@ async def generate_image(request: ImageRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/api/v1/generate_audio")
 async def generate_audio(request: AudioRequest):
     audio_prompt = request.prompt
 
     speech_file_path = Path(__file__).parent / "speech.mp3"
     response = openai.audio.speech.create(
-    model="tts-1",
-    voice="alloy",
-    input=audio_prompt
+        model="tts-1",
+        voice="alloy",
+        input=audio_prompt
     )
+
     response.stream_to_file(speech_file_path)
 
+    url = "speech.mp3"
+
+    response = requests.get(url)
+    with open('speech.mp3', 'wb') as file:
+        file.write(response.content)
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
