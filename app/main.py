@@ -32,6 +32,18 @@ class ImageRequest(BaseModel):
 class AudioRequest(BaseModel):
     prompt: str
 
+class FileName(BaseModel):
+    file: str
+
+@app.post("/speech_to_text")
+async def speech_to_text(file_name: FileName):
+    audio_file = open(file_name.file, "rb")
+    transcript = openai.audio.transcriptions.create(
+    model="whisper-1",
+    file=audio_file 
+    )
+
+    return transcript
 
 # respuesta personalizada
 @app.post("/api/v1/gpt_response")
@@ -89,7 +101,7 @@ async def generate_image(request: ImageRequest):
 async def generate_audio(request: AudioRequest):
     audio_prompt = request.prompt
 
-    speech_file_path = Path(__file__).parent / "speech.mp3"
+    speech_file_path = Path(__file__).parent / "./app/speech.mp3"
     response = openai.audio.speech.create(
         model="tts-1",
         voice="alloy",
