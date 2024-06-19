@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
+from pathlib import Path
 import openai
 import os
 import json
+
 
 # Configura la clave API de OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -25,6 +27,9 @@ class GPTRequest(BaseModel):
 class ImageRequest(BaseModel):
     prompt: str
     user_profile: UserProfile
+
+class AudioRequest(BaseModel):
+    prompt: str
 
 
 # respuesta personalizada
@@ -77,6 +82,19 @@ async def generate_image(request: ImageRequest):
         return {"url": response.data[0].url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v1/generate_audio")
+async def generate_audio(request: AudioRequest):
+    audio_prompt = request.prompt
+
+    speech_file_path = Path(__file__).parent / "speech.mp3"
+    response = openai.audio.speech.create(
+    model="tts-1",
+    voice="alloy",
+    input=audio_prompt
+    )
+    response.stream_to_file(speech_file_path)
+
 
 
 if __name__ == "__main__":
