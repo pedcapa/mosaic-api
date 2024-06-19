@@ -82,7 +82,9 @@ async def generate_image(request: ImageRequest):
     image_prompt = (
         f"Generate an image for a user with {user_profile.learning_style} learning style and {user_profile.disability}. "
         f"Include elements related to {', '.join(user_profile.interests)}. "
+        "You should never include text or words in the image. It is important that you consider the learning style, the disability and the interests of the user to create a useful image for them"
         f"Prompt: {request.prompt}"
+        
     )
 
     try:
@@ -102,7 +104,7 @@ async def generate_image(request: ImageRequest):
 async def generate_quizz(request: QuizzRequest):
     content = json.dumps(request.content)
     system_prompt = (
-        f"You are going to generate 5 questions for a user. The questions are going to be generated from a reference content. That content is in the prompt."
+        f"You are going to generate 5 questions for a user. The questions are going to be generated from a reference content. That content is in the prompt. It is important that you not use extra information than the one provided in the content"
         'Please provide the response in a structured JSON format with following format: "[{\"question_number\": 1, \"question_text\": \"example_question_text\", \"options\": {\"example_option_1\": true, \"example_option_2\": false, \"example_option_3\": false}}, ...]"'
         '1. Ensure the text in the fields is in the right format.'
         '2. The first option will always be true and the last two will always be false.'
