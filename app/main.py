@@ -48,7 +48,8 @@ async def get_gpt_response(request: GPTRequest):
     system_prompt = (
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
-        'Use the prefered learning style, the disability of the user and the interests to help build your response, all that info of the user must be used'
+        'Use the prefered learning style, the disability of the user and the interests to help build your response, all that info of the user could be used, but the main focus is the topic'
+        'Do not forget that the main goal is that you should explain the subject/topic very well for the user'
         'Please provide the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "text" field of the image should provide a detailed prompt for generate the image.'
@@ -82,7 +83,7 @@ async def generate_image(request: ImageRequest):
     image_prompt = (
         f"Generate an image for a user with {user_profile.learning_style} learning style and {user_profile.disability}. "
         f"Include elements related to {', '.join(user_profile.interests)}. "
-        "You should never include text or words in the image. It is important that you consider the learning style, the disability and the interests of the user to create a useful image for them"
+        "You should never include text or words in the image. Could be helpful that you take in consideration the learning style, the disability and the interests of the user to create a useful image for them, but remember the main goal is the topic"
         f"Prompt: {request.prompt}"
         
     )
@@ -145,7 +146,8 @@ async def generate_via_pdf(request: GPTRequest):
     system_prompt = (
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
-        'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user must be used'
+        'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user could maybe be used, but the main focus is the topic'
+        'Do not forget that the main goal is that you should explain the subject/topic very well for the user'
         'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","text": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "text" field of the image should provide a detailed prompt for generate the image.'
