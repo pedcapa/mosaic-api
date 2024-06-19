@@ -171,17 +171,13 @@ async def generate_via_pdf(request: GPTRequest):
 
 @app.post("/api/v1/upload_file/")
 async def upload_file(file: UploadFile = File(...)):
-    # Crear el directorio si no existe
     Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
 
-    # Construir la ruta completa donde se guardará el archivo
     file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
 
-    # Escribir el archivo en el sistema de archivos
     with open(file_location, "wb+") as file_object:
         file_object.write(await file.read())
 
-    # Devolver la ruta del archivo
     return JSONResponse(content={"filename": file.filename, "location": file_location})
 
 
