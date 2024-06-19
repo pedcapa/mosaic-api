@@ -19,10 +19,19 @@ async def fetch_gpt_response(request: GPTRequest) -> GPTResponse:
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": request.prompt}
-        ],
-        "response_format": "json_object"
+        ]
     }
+
+    # Debug: print the payload being sent to the API
+    print("Payload being sent to OpenAI API:", data)
+
     async with httpx.AsyncClient() as client:
         response = await client.post(settings.openai_chat_endpoint, headers=headers, json=data)
-        response.raise_for_status()
+
+        # Debug: print the response status code and response body
+        print("Response status code:", response.status_code)
+        print("Response body:", response.text)
+
+        response.raise_for_status()  # Esto lanzará una excepción si el código de estado HTTP no es 200-299
+
         return response.json()
