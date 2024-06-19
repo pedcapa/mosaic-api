@@ -169,7 +169,7 @@ async def generate_via_pdf(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/v1/upload-file/")
+@app.post("/api/v1/upload_file/")
 async def upload_file(file: UploadFile = File(...)):
     # Crear el directorio si no existe
     Path(UPLOAD_DIRECTORY).mkdir(parents=True, exist_ok=True)
