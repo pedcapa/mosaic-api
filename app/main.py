@@ -146,7 +146,8 @@ async def generate_via_pdf(request: GPTRequest):
     system_prompt = (
         f"You are assisting a user who prefers {user_profile.learning_style} learning style and has {user_profile.disability}. "
         f"The user is interested in topics such as {', '.join(user_profile.interests)}. "
-        'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user must be used'
+        'Use the prefered learning style, the disability of the user and their interests to build your response, all that info of the user could be used, but the main focus is the topic'
+        'Do not forget the main goal is that you should explain the subject/topic very well for the user'
         'The user will provide a PDF as a prompt, please provide the explanation in the response in a structured JSON format with following format: {"content": [{"type": "paragraph","text": ""},{"type": "image","description": ""},...]}'
         '1. Ensure the text in the "text" of the paragraph fields is in markdown format.'
         '2. The "description" field of the image should provide a detailed prompt for generate the image.'
